@@ -1,0 +1,17 @@
+#!/bin/bash
+cd $(dirname $0)
+curr_dir=$(pwd)
+
+
+
+# set crond job
+chmod 755 ${curr_dir}/ -R
+v_script=${curr_dir}/redis_rdbfile_scp.sh
+logfile=${curr_dir}/redis_rdbfile_scp.log
+#sed -e "/${v_script//\//\\/}/d" -i  /etc/crontab
+#sed -e '/^\s\{0,\}$/d' -i  /etc/crontab
+echo -e "0  */1  *  *  * root  sh ${v_script} >> ${logfile} 2>&1 " >> /etc/crontab
+systemctl enable crond
+systemctl stop crond
+systemctl start crond
+sh redis_rdbfile_scp.sh
